@@ -22,6 +22,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- `phi mcp list` now shows the configured URL for HTTP servers
+  (`http`, `streamable-http`, `sse`); stdio servers still show their
+  command and arguments.
+
 ### Security
 
 <!-- Released section -->

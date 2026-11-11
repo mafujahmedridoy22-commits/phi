@@ -78,12 +78,27 @@ func mcpList() error {
 		fmt.Println("(no servers — try: phi mcp add fetch -- npx -y @modelcontextprotocol/server-fetch)")
 		return nil
 	}
-	for _, name := range sortedKeys(servers) {
-		cfg := servers[name]
-		cmd, _ := cfg.CmdLine()
-		fmt.Printf("%s\t%s\n", name, strings.Join(cmd, " "))
-	}
+	fmt.Print(formatServerList(servers))
 	return nil
+}
+
+// formatServerList renders `phi mcp list` output in alphabetical order.
+// HTTP servers show their configured URL; stdio servers show command + args.
+func formatServerList(servers map[string]mcp.ServerConfig) string {
+	var b strings.Builder
+	for _, name := range sortedKeys(servers) {
+		b.WriteString(formatServerLine(name, servers[name]))
+		b.WriteByte('\n')
+	}
+	return b.String()
+}
+
+func formatServerLine(name string, cfg mcp.ServerConfig) string {
+	if cfg.IsHTTP() {
+		return fmt.Sprintf("%s	%s", name, cfg.URL)
+	}
+	cmd, _ := cfg.CmdLine()
+	return fmt.Sprintf("%s	%s", name, strings.Join(cmd, " "))
 }
 
 func sortedKeys(m map[string]mcp.ServerConfig) []string {
